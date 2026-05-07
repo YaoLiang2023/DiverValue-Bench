@@ -1,0 +1,25 @@
+torch<=2.0.1
+scipy
+packaging
+sentencepiece
+datasets
+accelerate>=0.21.0,<0.23.0  # 0.23.0 will cause an incorrect learning rate schedule when using deepspeed, which is likely caused by https://github.com/huggingface/accelerate/commit/727d624322c67db66a43c559d8c86414d5ffb537
+evaluate>=0.4.0
+tokenizers>=0.13.3
+protobuf
+openai<=0.28.1
+tiktoken
+rouge_score
+tensorboard
+wandb
+gradio==3.50.2
+termcolor
+jsonlines
+unidic-lite
+einops
+auto-gptq
+fire
+alpaca-eval==0.3.1
+# for human eval web app
+flask
+openpyxl

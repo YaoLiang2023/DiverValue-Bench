@@ -39,6 +39,10 @@ from . import __version__
 from .tuners import (
     AdaLoraModel,
     TriAdaptLoraModel,
+    SHIMLoraModel,
+    ICFMLoraModel,
+    CTCMLoraModel,
+    DTSMLoraModel,
     AdaptionPromptModel,
     IA3Model,
     LoraModel,
@@ -74,6 +78,10 @@ PEFT_TYPE_TO_MODEL_MAPPING = {
     PeftType.DORA: DoraModel,
     PeftType.ADALORA: AdaLoraModel,
     PeftType.TRIADAPTLORA: TriAdaptLoraModel,
+    PeftType.SHIMLORA: SHIMLoraModel,
+    PeftType.ICFMLORA: ICFMLoraModel,
+    PeftType.CTCMLORA: CTCMLoraModel,
+    PeftType.DTSMLORA: DTSMLoraModel,
     PeftType.ADAPTION_PROMPT: AdaptionPromptModel,
     PeftType.IA3: IA3Model,
 }

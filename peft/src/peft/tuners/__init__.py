@@ -23,6 +23,10 @@ from .dora import DoraConfig, DoraModel
 from .ia3 import IA3Config, IA3Model
 from .adalora import AdaLoraConfig, AdaLoraModel
 from .triadaptlora import TriAdaptLoraConfig, TriAdaptLoraModel
+from .shimlora import SHIMLoraConfig, SHIMLoraModel
+from .icfmlora import ICFMLoraConfig, ICFMLoraModel
+from .ctcmlora import CTCMLoraConfig, CTCMLoraModel
+from .dtsmlora import DTSMLoraConfig, DTSMLoraModel
 from .p_tuning import PromptEncoder, PromptEncoderConfig, PromptEncoderReparameterizationType
 from .prefix_tuning import PrefixEncoder, PrefixTuningConfig
 from .prompt_tuning import PromptEmbedding, PromptTuningConfig, PromptTuningInit

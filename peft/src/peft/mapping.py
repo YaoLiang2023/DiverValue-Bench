@@ -40,6 +40,10 @@ from .tuners import (
     LoraConfig,
     DoraConfig,
     TriAdaptLoraConfig,
+    SHIMLoraConfig,
+    ICFMLoraConfig,
+    CTCMLoraConfig,
+    DTSMLoraConfig,
     PrefixTuningConfig,
     PromptEncoderConfig,
     PromptTuningConfig,
@@ -71,6 +75,10 @@ PEFT_TYPE_TO_CONFIG_MAPPING = {
     "DORA": DoraConfig,
     "ADALORA": AdaLoraConfig,
     "TRIADAPTLORA": TriAdaptLoraConfig,
+    "SHIMLORA": SHIMLoraConfig,
+    "ICFMLORA": ICFMLoraConfig,
+    "CTCMLORA": CTCMLoraConfig,
+    "DTSMLORA": DTSMLoraConfig,
     "IA3": IA3Config,
 }
 

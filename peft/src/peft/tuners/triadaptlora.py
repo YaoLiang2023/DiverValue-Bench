@@ -383,7 +383,7 @@ class TriAdaptLoraLayer(LoraLayer):
             self.compute_score(adapter_name)
 
     def add_parameters(self, add_r, adapter_name):
-        print("==================================Enter the new l4 add_parameters method=====================================")
+        print("==================================Enter the new l5 add_parameters method=====================================")
         if len(self.lora_C_row[adapter_name]) > 0:
             ranknum = self.lora_C_row[adapter_name][-1].size(1)
         else:
@@ -395,8 +395,10 @@ class TriAdaptLoraLayer(LoraLayer):
         b = nn.Parameter(self.weight.new_zeros((self.out_features, add_r)), requires_grad=True)
         # nn.init.normal_(c_row, mean=0.0, std=0.02)
         # nn.init.normal_(c_col, mean=0.0, std=0.02)
+        nn.init.eye_(c_row)
+        nn.init.eye_(c_col)
         nn.init.normal_(a, mean=0.0, std=0.02)
-        nn.init.normal_(b, mean=0.0, std=0.02)
+        # nn.init.normal_(b, mean=0.0, std=0.02)
         self.lora_C_row[adapter_name].append(c_row)
         self.lora_C_col[adapter_name].append(c_col)
         self.lora_A[adapter_name].append(a)

@@ -1,12 +1,12 @@
-# MVPBench: A Benchmark and Fine-Tuning Framework for Aligning Large Language Models with Diverse Human Values
+# DiverValue-Bench: A Benchmark and Fine-Tuning Framework for Aligning Large Language Models with Diverse Human Values
 
 ## 📌 Overview
 
 This repository contains the core source code for the paper:  
-**“MVPBench: A Benchmark for Evaluating Large Language Models on Multi-Value Preference Alignment”**.
+**“DiverValue-Bench: A Benchmark for Evaluating Large Language Models on Multi-Value Preference Alignment”**.
 
 Our codebase supports the full pipeline for:
-- Generating multi-value-aligned QA data (`MVPBench`) from real user survey responses and conversations.
+- Generating multi-value-aligned QA data (`DiverValue-Bench`) from real user survey responses and conversations.
 - Training and evaluating alignment models (e.g., LLaMA2 with DPO + LoRA).
 - Computing evaluation metrics such as:
   - **Preference Matching Accuracy**
@@ -22,9 +22,9 @@ Our codebase supports the full pipeline for:
 ├── merge_data.py                           # Merge survey and conversation JSONL files into unified training data
 ├── chatbot_final.py                        # Convert user value scores into English preference summaries
 ├── add_values_final.py                     # Convert 7-dim user value scores into English preference descriptions using GPT-4o
-├── generate_data_final.py                  # Generate MVPBench data from survey + chat history
+├── generate_data_final.py                  # Generate DiverValue-Bench data from survey + chat history
 ├── train_llama2-7b_final.py                # Finetune LLaMA2 using DPO (LoRA + SFT)
-├── eval_model_gpt-4o.py                    # Evaluate GPT-4o on MVPBench using reference answers
+├── eval_model_gpt-4o.py                    # Evaluate GPT-4o on DiverValue-Bench using reference answers
 ├── eval_self.py                            # Evaluate alignment accuracy using log-prob comparison
 ├── eval_uf-p-4.py                          # Evaluate policy model on UF-P-4 benchmark
 ├── llama2-7b_spmr.py                       # Evaluate Semantic Preference Matching Rate (SPMR)
@@ -117,7 +117,7 @@ Core logic is implemented in `chatbot_final.py`.
 
 ## 🔄 Data Generation
 
-To generate the MVPBench dataset from labeled JSONL files (survey responses + chats):
+To generate the DiverValue-Bench dataset from labeled JSONL files (survey responses + chats):
 
 ```bash
 python generate_data_final.py
@@ -143,7 +143,7 @@ python train_llama2-7b_final.py
 
 ## 📊 Evaluation Modules
 
-### 1. Evaluate GPT-4o on MVPBench:
+### 1. Evaluate GPT-4o on DiverValue-Bench:
 
 ```bash
 python eval_model_gpt-4o.py

@@ -5,22 +5,12 @@ rejudge_pairwise_polyjudge.py
 
 Agreement-gated (poly-judge) pairwise re-judging for VALUE-ALIGNMENT.
 
-Key properties (per your request):
+Key properties:
 - NOT blind: the judge is told that answer_w is intended aligned and answer_l is intended misaligned.
-- NO swap-consistency.
 - Uses THREE different judge models:
     1) gpt-4o
     2) Doubao-1.5-pro-32k
     3) DeepSeek-V3-Fast
-- Hardness is controlled by objective, reproducible rules:
-    - margin/slack on calibrated compliance scores
-    - minimum reference separation (score_w - score_l)
-    - minimum enforced dimensions used (>=2 by default)
-    - agreement-gated aggregation across judges
-
-Notes on "targeting ~70% W":
-- This script defaults to conservative thresholds that usually reduce inflated W-rates.
-- Exact W% depends on your data and model outputs; tune --margin/--ref_sep/--slack to hit your desired range.
 """
 
 from __future__ import annotations

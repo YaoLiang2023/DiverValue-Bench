@@ -433,189 +433,6 @@ def aggregate_labels(
         "note": "no majority",
     }
 
-
-# -----------------------------
-# Agreement statistics (inter-judge)
-# -----------------------------
-
-def _pairwise(iterable: List[str]) -> List[Tuple[str, str]]:
-    out = []
-    for i in range(len(iterable)):
-        for j in range(i + 1, len(iterable)):
-            out.append((iterable[i], iterable[j]))
-    return out
-
-def _cohen_kappa(labels_a: List[str], labels_b: List[str], categories: List[str]) -> float:
-    """
-    Cohen's kappa for two raters.
-    labels_a and labels_b must be aligned lists with equal length.
-    """
-    n = min(len(labels_a), len(labels_b))
-    if n <= 0:
-        return 0.0
-    labels_a = labels_a[:n]
-    labels_b = labels_b[:n]
-
-    po = sum(1 for x, y in zip(labels_a, labels_b) if x == y) / n
-
-    # Marginals
-    p_a = {c: 0 for c in categories}
-    p_b = {c: 0 for c in categories}
-    for x in labels_a:
-        if x in p_a:
-            p_a[x] += 1
-    for y in labels_b:
-        if y in p_b:
-            p_b[y] += 1
-    for c in categories:
-        p_a[c] /= n
-        p_b[c] /= n
-
-    pe = sum(p_a[c] * p_b[c] for c in categories)
-    denom = 1.0 - pe
-    if denom <= 1e-12:
-        return 0.0
-    return (po - pe) / denom
-
-def _fleiss_kappa(counts_matrix: List[List[int]]) -> float:
-    """
-    Fleiss' kappa for N items, n raters, k categories.
-    counts_matrix is N x k where each row sums to n.
-    """
-    N = len(counts_matrix)
-    if N == 0:
-        return 0.0
-    k = len(counts_matrix[0]) if counts_matrix[0] else 0
-    if k == 0:
-        return 0.0
-    n = sum(counts_matrix[0])
-    if n <= 1:
-        return 0.0
-
-    # P_i
-    P_i = []
-    for row in counts_matrix:
-        if len(row) != k:
-            return 0.0
-        if sum(row) != n:
-            # if malformed, skip by returning 0
-            return 0.0
-        numer = sum(v * (v - 1) for v in row)
-        P_i.append(numer / (n * (n - 1)))
-
-    P_bar = sum(P_i) / N
-
-    # p_j
-    p_j = [0.0 for _ in range(k)]
-    for row in counts_matrix:
-        for j in range(k):
-            p_j[j] += row[j]
-    p_j = [v / (N * n) for v in p_j]
-
-    P_e = sum(v * v for v in p_j)
-    denom = 1.0 - P_e
-    if denom <= 1e-12:
-        return 0.0
-    return (P_bar - P_e) / denom
-
-def compute_inter_judge_agreement(
-    out_records: List[Dict[str, Any]],
-    judge_names: List[str],
-    categories: List[str],
-    *,
-    exclude_abstain_items: bool = False,
-) -> Dict[str, Any]:
-    """
-    Compute inter-judge agreement over records.
-    - exclude_abstain_items: if True, drop items where ANY judge label == 'ABSTAIN'
-    Returns a dict containing:
-      - n_total, n_used
-      - all_three_agreement
-      - pairwise_agreement + cohen_kappa per judge pair
-      - fleiss_kappa
-      - category_marginals per judge
-    """
-    n_total = len(out_records)
-    items = []
-
-    for r in out_records:
-        judges = r.get("judges", {})
-        labels = {}
-        ok = True
-        for j in judge_names:
-            lab = None
-            if isinstance(judges, dict) and j in judges and isinstance(judges[j], dict):
-                lab = judges[j].get("label", None)
-            if lab is None:
-                ok = False
-                break
-            lab = str(lab).upper().strip()
-            if lab not in categories:
-                lab = "ABSTAIN" if "ABSTAIN" in categories else categories[-1]
-            labels[j] = lab
-        if not ok:
-            continue
-        if exclude_abstain_items and any(labels[j] == "ABSTAIN" for j in judge_names):
-            continue
-        items.append(labels)
-
-    n_used = len(items)
-    if n_used == 0:
-        return {
-            "n_total": n_total,
-            "n_used": 0,
-            "all_three_agreement": 0.0,
-            "pairwise": {},
-            "fleiss_kappa": 0.0,
-            "category_marginals": {},
-            "note": "no usable items for agreement computation",
-        }
-
-    # All-three exact agreement
-    all3 = sum(1 for it in items if len(set(it.values())) == 1)
-    all_three_agreement = all3 / n_used
-
-    # Pairwise agreement & Cohen's kappa
-    pairwise_stats = {}
-    for a, b in _pairwise(judge_names):
-        la = [it[a] for it in items]
-        lb = [it[b] for it in items]
-        po = sum(1 for x, y in zip(la, lb) if x == y) / n_used
-        kappa = _cohen_kappa(la, lb, categories)
-        pairwise_stats[f"{a}__vs__{b}"] = {"agreement": po, "cohen_kappa": kappa}
-
-    # Fleiss' kappa
-    cat_index = {c: i for i, c in enumerate(categories)}
-    counts_matrix = []
-    for it in items:
-        row = [0 for _ in categories]
-        for j in judge_names:
-            row[cat_index[it[j]]] += 1
-        counts_matrix.append(row)
-    fk = _fleiss_kappa(counts_matrix)
-
-    # Marginals
-    marginals = {}
-    for j in judge_names:
-        m = {c: 0 for c in categories}
-        for it in items:
-            m[it[j]] += 1
-        for c in categories:
-            m[c] /= n_used
-        marginals[j] = m
-
-    return {
-        "n_total": n_total,
-        "n_used": n_used,
-        "all_three_agreement": all_three_agreement,
-        "pairwise": pairwise_stats,
-        "fleiss_kappa": fk,
-        "category_marginals": marginals,
-        "exclude_abstain_items": exclude_abstain_items,
-        "categories": categories,
-        "judge_names": judge_names,
-    }
-
 # -----------------------------
 # Main
 # -----------------------------
@@ -632,14 +449,14 @@ def main():
     ap.add_argument("--sleep", type=float, default=0.0, help="Sleep seconds between API calls.")
 
     # Judge models: names fixed as requested, but endpoints/keys configurable
-    ap.add_argument("--openai_base_url", default=os.getenv("OPENAI_BASE_URL", "https://aihubmix.com/v1"))
-    ap.add_argument("--openai_api_key", default=os.getenv("OPENAI_API_KEY", "sk-2msFd8JG0v1fTIEN41978e18C40f4dFcA29c0a790eFc766c"))
+    ap.add_argument("--openai_base_url", default=os.getenv("OPENAI_BASE_URL", ""))
+    ap.add_argument("--openai_api_key", default=os.getenv("OPENAI_API_KEY", ""))
 
-    ap.add_argument("--doubao_base_url", default=os.getenv("DOUBAO_BASE_URL", "https://aihubmix.com/v1"))
-    ap.add_argument("--doubao_api_key", default=os.getenv("DOUBAO_API_KEY", "sk-2msFd8JG0v1fTIEN41978e18C40f4dFcA29c0a790eFc766c"))
+    ap.add_argument("--doubao_base_url", default=os.getenv("DOUBAO_BASE_URL", ""))
+    ap.add_argument("--doubao_api_key", default=os.getenv("DOUBAO_API_KEY", ""))
 
-    ap.add_argument("--deepseek_base_url", default=os.getenv("DEEPSEEK_BASE_URL", "https://aihubmix.com/v1"))
-    ap.add_argument("--deepseek_api_key", default=os.getenv("DEEPSEEK_API_KEY", "sk-2msFd8JG0v1fTIEN41978e18C40f4dFcA29c0a790eFc766c"))
+    ap.add_argument("--deepseek_base_url", default=os.getenv("DEEPSEEK_BASE_URL", ""))
+    ap.add_argument("--deepseek_api_key", default=os.getenv("DEEPSEEK_API_KEY", ""))
 
     ap.add_argument("--judge_temperature", type=float, default=0.0)
     ap.add_argument("--judge_max_tokens", type=int, default=360)
@@ -835,44 +652,6 @@ def main():
     for k, v in counts.items():
         print(f"{k}: {v}/{total} ({v/total:.2%})")
     print(f"Saved: {args.out_json}")
-
-    # -----------------------------
-    # Inter-judge agreement (full corpus)
-    # -----------------------------
-    judge_names = [j.name for j in judges]
-    categories_all = ["W", "L", "TIE", "ABSTAIN"]
-
-    stats_all = compute_inter_judge_agreement(
-        out_records, judge_names, categories_all, exclude_abstain_items=False
-    )
-    stats_no_abstain = compute_inter_judge_agreement(
-        out_records, judge_names, categories_all, exclude_abstain_items=True
-    )
-
-    def _fmt_pct(x: float) -> str:
-        return f"{x * 100:.2f}%"
-
-    print("\n=== Inter-Judge Agreement (incl. ABSTAIN) ===")
-    print(f"Items used: {stats_all['n_used']}/{stats_all['n_total']}")
-    print(f"All-3 exact agreement: {_fmt_pct(stats_all['all_three_agreement'])}")
-    print(f"Fleiss' kappa (3 judges): {stats_all['fleiss_kappa']:.4f}")
-    for pair, st in stats_all["pairwise"].items():
-        print(f"{pair}: agreement={_fmt_pct(st['agreement'])}, Cohen's kappa={st['cohen_kappa']:.4f}")
-
-    print("\n=== Inter-Judge Agreement (excluding ANY ABSTAIN item) ===")
-    print(f"Items used: {stats_no_abstain['n_used']}/{stats_no_abstain['n_total']}")
-    print(f"All-3 exact agreement: {_fmt_pct(stats_no_abstain['all_three_agreement'])}")
-    print(f"Fleiss' kappa (3 judges): {stats_no_abstain['fleiss_kappa']:.4f}")
-    for pair, st in stats_no_abstain["pairwise"].items():
-        print(f"{pair}: agreement={_fmt_pct(st['agreement'])}, Cohen's kappa={st['cohen_kappa']:.4f}")
-
-    # Save agreement stats for paper/appendix usage
-    if args.out_json.lower().endswith(".json"):
-        agree_path = args.out_json[:-5] + "_agreement.json"
-    else:
-        agree_path = args.out_json + "_agreement.json"
-    dump_json({"incl_abstain": stats_all, "exclude_abstain": stats_no_abstain}, agree_path)
-    print(f"Agreement stats saved: {agree_path}")
 
 
 if __name__ == "__main__":

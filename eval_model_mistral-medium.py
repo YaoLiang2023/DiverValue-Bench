@@ -9,7 +9,7 @@ client = OpenAI(
     api_key=""
 )
 
-MODEL_NAME = "DeepSeek-V3-Fast"
+MODEL_NAME = "AiHubmix-mistral-medium"
 
 def load_dataset(json_file):
     with open(json_file, "r", encoding="utf-8") as f:
@@ -54,7 +54,7 @@ def query_openai(prompt, model=MODEL_NAME, max_tokens=512, temperature=0.7, retr
 
 def main():
     input_file = "data/generated_multi_value_dataset_with_info.json"
-    output_file = "data/deepSeek-v3-fast_multi_value_evaluation_result_pref_match.json"
+    output_file = "data/mistral-medium_multi_value_evaluation_result_pref_match.json"
 
     data = load_dataset(input_file)
     eval_results = []

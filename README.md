@@ -133,11 +133,11 @@ python generate_data_final.py
 To finetune LLaMA-2-7b with DPO (Direct Preference Optimization + LoRA):
 
 ```bash
-python train_llama2-7b_final.py
+python train_llama2-7b_final_seed12.py
 ```
 
 - Model: `meta-llama/Llama-2-7b-hf`
-- Output: `./output/llama2_dpo_finetuned_final`
+- Output: `./output/llama2-7b_dpo_finetuned_final_seed12`
 
 ---
 

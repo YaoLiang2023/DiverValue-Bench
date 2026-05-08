@@ -105,9 +105,6 @@ def main():
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(eval_results, f, ensure_ascii=False, indent=2)
 
-    # Calculate the agreement rate.
-    matched = sum([1 for r in eval_results if r["judge_match"] and "Yes" in r["judge_match"]])
-    print(f"Preference-aligned match count: {matched}/{total} ({matched/total:.2%})")
     print(f"All results saved in {output_file}")
 
 if __name__ == "__main__":

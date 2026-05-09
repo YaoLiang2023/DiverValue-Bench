@@ -45,7 +45,7 @@ DiverValue-Bench provides:
 
 ---
 
-## Open Materials Checklist
+## 2.Open Materials Checklist
 
 The released open-science materials include:
 
@@ -65,7 +65,7 @@ If some materials are hosted externally due to file-size or licensing constraint
 
 ---
 
-## 2. Main Contributions Supported by This Repository
+## 3. Main Contributions Supported by This Repository
 
 This repository supports the following components of the paper:
 
@@ -91,7 +91,7 @@ This repository supports the following components of the paper:
 
 ---
 
-## 3. Repository Structure
+## 4. Repository Structure
 
 The repository is organized around the full DiverValue-Bench pipeline.
 
@@ -183,9 +183,9 @@ If you keep the original flat script layout, the commands below still apply afte
 
 ---
 
-## 4. Installation
+## 5. Installation
 
-### 4.1 Recommended Environment
+### 5.1 Recommended Environment
 
 We recommend using a clean Conda environment.
 
@@ -219,7 +219,7 @@ Alternatively:
 pip install -r requirements.txt
 ```
 
-### 4.2 Hardware Requirements
+### 5.2 Hardware Requirements
 
 The API-based evaluation scripts can run on CPU because generation and judging are performed through model APIs.
 
@@ -240,9 +240,9 @@ The released training scripts use:
 
 ---
 
-## 5. Data
+## 6. Data
 
-### 5.1 Released Data Files
+### 6.1 Released Data Files
 
 The main benchmark files are:
 
@@ -272,7 +272,7 @@ instruction_following.json
 truthfulness.json
 ```
 
-### 5.2 Data Format
+### 6.2 Data Format
 
 Each DiverValue-Bench instance contains a value-sensitive question, user profile metadata, value-preference information, and a contrastive reference pair.
 
@@ -303,7 +303,7 @@ A simplified example is shown below:
 }
 ```
 
-### 5.3 Value Dimensions
+### 6.3 Value Dimensions
 
 The benchmark uses seven value dimensions:
 
@@ -325,7 +325,7 @@ The released construction scripts map raw value scores into interpretable prefer
 
 ---
 
-## 6. API Configuration
+## 7. API Configuration
 
 Some scripts use API-based models for answer generation or judge-based evaluation. Before running these scripts, configure your API endpoint and key.
 
@@ -363,13 +363,13 @@ Never commit API keys to the public repository.
 
 ---
 
-## 7. Reproducing the Main Results
+## 8. Reproducing the Main Results
 
 This section describes how to reproduce the major experimental components reported in the paper.
 
 ---
 
-### 7.1 Generate Model Answers on DiverValue-Bench
+### 8.1 Generate Model Answers on DiverValue-Bench
 
 The API-based generation scripts take `generated_multi_value_dataset_with_info.json` as input and produce model-specific output files.
 
@@ -415,7 +415,7 @@ data/mistral-medium_multi_value_evaluation_result_pref_match.json
 
 ---
 
-### 7.2 Run Poly-Judge Evaluation
+### 8.2 Run Poly-Judge Evaluation
 
 DiverValue-Bench uses a poly-judge protocol. Each evaluated model answer is judged by three independent judge models:
 
@@ -462,7 +462,7 @@ python scripts/judge/eval_model_judge_mistral-medium_pairwise_polyjudge.py
 
 ---
 
-### 7.3 Preference Alignment Accuracy
+### 8.3 Preference Alignment Accuracy
 
 Preference Alignment Accuracy (PAA) is defined as the fraction of evaluated instances whose final poly-judge label is `W`:
 
@@ -486,7 +486,7 @@ Small differences in `N` may occur when rare invalid or missing model outputs ar
 
 ---
 
-## 8. Fine-Tuning with LoRA + DPO
+## 9. Fine-Tuning with LoRA + DPO
 
 We fine-tune LLaMA-2 and Qwen models using DiverValue-Bench preference pairs.
 
@@ -507,7 +507,7 @@ Each instance is converted into the DPO format:
 }
 ```
 
-### 8.1 LLaMA-2 Training
+### 9.1 LLaMA-2 Training
 
 LLaMA-2-7B:
 
@@ -528,7 +528,7 @@ output/llama2-7b_dpo_finetuned_final_seed12
 output/llama2-13b_dpo_finetuned_final_seed12
 ```
 
-### 8.2 Qwen Training
+### 9.2 Qwen Training
 
 Qwen-7B:
 
@@ -549,7 +549,7 @@ output/qwen-7b_dpo_finetuned_final_seed12
 output/qwen-14b_dpo_finetuned_final_seed12
 ```
 
-### 8.3 Training Hyperparameters
+### 9.3 Training Hyperparameters
 
 | Hyperparameter                   |      Value |
 | -------------------------------- | ---------: |
@@ -581,11 +581,11 @@ c_attn
 
 ---
 
-## 9. OPA Evaluation
+## 10. OPA Evaluation
 
 Optimized Preference Alignment (OPA) evaluates whether a model assigns higher length-normalized likelihood to the aligned answer `answer_w` than to the misaligned answer `answer_l` under increasingly strict log-probability margins.
 
-### 9.1 In-Distribution Evaluation on DVB-test
+### 10.1 In-Distribution Evaluation on DVB-test
 
 Base LLaMA-2-7B:
 
@@ -635,7 +635,7 @@ Fine-tuned Qwen-14B:
 python scripts/eval_opa/eval_self_qwen-14b_opa_seed12.py
 ```
 
-### 9.2 Out-of-Distribution Evaluation on UF-P-4
+### 10.2 Out-of-Distribution Evaluation on UF-P-4
 
 UF-P-4 contains four preference-alignment subsets:
 
@@ -679,9 +679,9 @@ The released scripts include the seed-12 runs. To reproduce mean and standard de
 
 ---
 
-## 10. Country, Region, and Demographic Analysis
+## 11. Country, Region, and Demographic Analysis
 
-### 10.1 Mean PAA by Birth Country/Region
+### 11.1 Mean PAA by Birth Country/Region
 
 To generate the country-level mean PAA map across five evaluated models:
 
@@ -695,13 +695,13 @@ To generate the GPT-4o country-level map:
 python scripts/analysis/statistics_birth_country_judge_map_gpt-4o.py
 ```
 
-### 10.2 Country-Level Radar Chart
+### 11.2 Country-Level Radar Chart
 
 ```bash
 python scripts/analysis/statistics_birth_country_judge_rada_final_r_hk.py
 ```
 
-### 10.3 Regional and Demographic Radar Charts
+### 11.3 Regional and Demographic Radar Charts
 
 ```bash
 python scripts/analysis/statistics_region_judge_final.py
@@ -718,7 +718,7 @@ Only `final_label == "W"` is counted as aligned.
 
 ---
 
-## 11. Reproducibility Checklist
+## 12. Reproducibility Checklist
 
 The following table maps paper results to the corresponding scripts.
 
@@ -738,7 +738,7 @@ The following table maps paper results to the corresponding scripts.
 
 ---
 
-## 12. Notes on Reproducibility
+## 13. Notes on Reproducibility
 
 1. **Closed-source API models may change over time.**
    Results involving GPT-4o, Claude, DeepSeek, Doubao, or Mistral API endpoints may vary if the provider updates the model, endpoint, decoding behavior, or safety policy.
@@ -760,7 +760,7 @@ The following table maps paper results to the corresponding scripts.
 
 ---
 
-## 13. Ethical and Responsible Use
+## 14. Ethical and Responsible Use
 
 DiverValue-Bench is designed for research on value alignment, personalized alignment, and cross-cultural evaluation of LLMs. Because the benchmark includes demographic metadata and value-preference information, users should follow responsible data-use practices.
 
@@ -775,7 +775,7 @@ The intended use of this benchmark is to support safer, fairer, and more cultura
 
 ---
 
-## 14. Citation
+## 15. Citation
 
 If you use DiverValue-Bench, please cite our paper:
 
@@ -790,7 +790,7 @@ If you use DiverValue-Bench, please cite our paper:
 
 ---
 
-## 15. License
+## 16. License
 
 Please see `LICENSE` for the code license and `DATA_LICENSE` for the dataset license.
 
@@ -798,7 +798,7 @@ If you use third-party datasets, models, or APIs, please also comply with their 
 
 ---
 
-## 16. Contact
+## 17. Contact
 
 For questions about the benchmark, implementation, or reproducibility materials, please contact:
 

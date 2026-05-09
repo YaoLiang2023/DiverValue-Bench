@@ -1,10 +1,3 @@
-下面给出一版**可直接替换 GitHub 仓库根目录 `README.md` 的英文版本**。我按照 IJCAI 2026 对 reproducibility materials 的关注点来组织：清楚说明数据、工具、环境、复现实验路径、结果表格、引用、许可与伦理说明。IJCAI 官方 reproducibility 页面强调，复现材料应让读者明确知道使用了哪些数据与工具，并能够用相同数据和分析工具复现论文结果；这一点我已体现在 README 的结构中。([IJCAI 2026][1])
-
-论文中的关键事实我也已对齐：DiverValue-Bench 包含 23,763 个实例、1,396 位用户、74 个国家/地区、7 个价值维度，并支持基于 PAA 的 poly-judge 评估和基于 OPA 的 LoRA/DPO 微调评估。 论文的 fine-tuning 设置为 LoRA+DPO，LoRA rank 为 16、alpha 为 32、dropout 为 0.05、DPO beta 为 0.1、训练 3 个 epoch、学习率 5e-5。 代码中也对应实现了 LLaMA-2 与 Qwen 的 DPO/LoRA 训练、DVB-test/UF-P-4 OPA 评测、API 模型生成、poly-judge 评测以及国家/地区和人口统计分组统计。   
-
----
-
-````markdown
 # DiverValue-Bench: A Benchmark and Fine-Tuning Framework for Aligning Large Language Models with Diverse Human Values
 
 [![Conference](https://img.shields.io/badge/IJCAI--ECAI-2026-blue)]()

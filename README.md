@@ -188,7 +188,7 @@ If you keep the original flat script layout, the commands below still apply afte
 We recommend using a clean Conda environment.
 
 ```bash
-conda create -n divervalue python=3.10 -y
+conda create -n divervalue python=3.11 -y
 conda activate divervalue
 ```
 
@@ -196,25 +196,19 @@ Install core dependencies:
 
 ```bash
 pip install torch==2.0.1
-pip install transformers==4.31.0
-pip install peft
+pip install -r requirements.txt
+pip install -e ./transformers-4.31.0
+pip install -e ./peft
 pip install trl==0.6.0
-pip install datasets
-pip install accelerate
 pip install scikit-learn==1.3.0
-pip install sentence-transformers==2.2.2
+pip install sentence-transformers==2.2.2 --no-deps
+pip install huggingface_hub==0.14.1
 pip install tqdm
 pip install pandas
 pip install numpy
 pip install matplotlib
 pip install plotly
 pip install openai
-```
-
-Alternatively:
-
-```bash
-pip install -r requirements.txt
 ```
 
 ### 5.2 Hardware Requirements

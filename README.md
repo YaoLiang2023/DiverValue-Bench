@@ -775,22 +775,7 @@ The intended use of this benchmark is to support safer, fairer, and more cultura
 
 ---
 
-## 15. Citation
-
-If you use DiverValue-Bench, please cite our paper:
-
-```bibtex
-@inproceedings{liang2026divervaluebench,
-  title     = {DiverValue-Bench: A Benchmark and Fine-Tuning Framework for Aligning Large Language Models with Diverse Human Values},
-  author    = {Liang, Yao and Zhao, Dongcheng and Zhao, Feifei and Shen, Guobin and Wang, Yuwei and Liang, Dongqi and Zeng, Yi},
-  booktitle = {Proceedings of the Thirty-Fifth International Joint Conference on Artificial Intelligence},
-  year      = {2026}
-}
-```
-
----
-
-## 16. License
+## 15. License
 
 Please see `LICENSE` for the code license and `DATA_LICENSE` for the dataset license.
 
@@ -798,7 +783,7 @@ If you use third-party datasets, models, or APIs, please also comply with their 
 
 ---
 
-## 17. Contact
+## 16. Contact
 
 For questions about the benchmark, implementation, or reproducibility materials, please contact:
 

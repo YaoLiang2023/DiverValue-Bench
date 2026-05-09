@@ -151,5 +151,5 @@ def process_jsonl(input_path, output_path):
 
 if __name__ == "__main__":
     input_file = "data/labeled_prism.jsonl"
-    output_file = "data/generated_multi_value_dataset_with_info.json"
+    output_file = "data/DiverValue-Bench_dataset.json"
     process_jsonl(input_file, output_file)

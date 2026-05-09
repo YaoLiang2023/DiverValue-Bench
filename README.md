@@ -61,8 +61,6 @@ The released open-science materials include:
 - `LICENSE` and `DATA_LICENSE`: licensing information for code and data.
 - `CITATION.cff`: citation metadata for the paper and repository.
 
-If some materials are hosted externally due to file-size or licensing constraints, the corresponding public links are provided in the sections below.
-
 ---
 
 ## 3. Main Contributions Supported by This Repository

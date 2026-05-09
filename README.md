@@ -1,15 +1,18 @@
 # DiverValue-Bench: A Benchmark and Fine-Tuning Framework for Aligning Large Language Models with Diverse Human Values
 
 [![Conference](https://img.shields.io/badge/IJCAI--ECAI-2026-blue)]()
-[![Track](https://img.shields.io/badge/Track-Human--Centred%20AI-purple)]()
+[![Track](https://img.shields.io/badge/Special%20Track-Human--Centred%20AI-purple)]()
 [![Task](https://img.shields.io/badge/Task-Value%20Alignment-green)]()
 [![Benchmark](https://img.shields.io/badge/Benchmark-DiverValue--Bench-orange)]()
 [![License](https://img.shields.io/badge/License-See%20LICENSE-lightgrey)]()
 
-Official implementation for:
+## Open-Science Materials for IJCAI-ECAI 2026
 
-> **DiverValue-Bench: A Benchmark and Fine-Tuning Framework for Aligning Large Language Models with Diverse Human Values**  
-> IJCAI-ECAI 2026, Human-Centred AI Track
+This repository contains the data and the code described in the paper **“DiverValue-Bench: A Benchmark and Fine-Tuning Framework for Aligning Large Language Models with Diverse Human Values”** by **Yao Liang, Dongcheng Zhao, Feifei Zhao, Guobin Shen, Yuwei Wang, Dongqi Liang, and Yi Zeng**, to appear in the **Proceedings of the IJCAI-ECAI 2026 Special Track on Human-Centred Artificial Intelligence: Multidisciplinary Contours and Challenges of Next-Generation AI Research and Applications**.
+
+This repository is released as part of the open-source and reproducibility materials required for the IJCAI-ECAI 2026 camera-ready stage. It provides the benchmark data, implementation code, evaluation scripts, fine-tuning scripts, analysis scripts, and documentation necessary to reproduce the main results reported in the paper.
+
+Official special-track information: https://2026.ijcai.org/ijcai-ecai-2026-call-for-papers-human-centred-ai/
 
 DiverValue-Bench is a benchmark and fine-tuning framework for evaluating and improving large language models (LLMs) under **multi-dimensional, personalized, and cross-cultural human value preferences**. The benchmark contains contrastive preference pairs, rich user profiles, and value-preference annotations, enabling both population-aware evaluation and preference-based alignment tuning.
 

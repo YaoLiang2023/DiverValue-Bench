@@ -45,6 +45,26 @@ DiverValue-Bench provides:
 
 ---
 
+## Open Materials Checklist
+
+The released open-science materials include:
+
+- `data/`: DiverValue-Bench data splits, evaluation data, and processed benchmark files.
+- `scripts/data_construction/`: scripts for value-preference mapping and benchmark construction.
+- `scripts/generation/`: scripts for generating model responses with API-based LLMs.
+- `scripts/judge/`: poly-judge pairwise evaluation and recomputation scripts.
+- `scripts/train/`: LoRA + DPO fine-tuning scripts for LLaMA-2 and Qwen models.
+- `scripts/eval_opa/`: in-domain OPA evaluation scripts on DiverValue-Bench.
+- `scripts/eval_ufp4/`: out-of-domain OPA evaluation scripts on UF-P-4.
+- `scripts/analysis/`: country-level, regional, and demographic analysis scripts.
+- `README.md`: instructions for installation, data preparation, evaluation, fine-tuning, and result reproduction.
+- `LICENSE` and `DATA_LICENSE`: licensing information for code and data.
+- `CITATION.cff`: citation metadata for the paper and repository.
+
+If some materials are hosted externally due to file-size or licensing constraints, the corresponding public links are provided in the sections below.
+
+---
+
 ## 2. Main Contributions Supported by This Repository
 
 This repository supports the following components of the paper:

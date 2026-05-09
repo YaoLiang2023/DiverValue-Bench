@@ -245,13 +245,13 @@ The released training scripts use:
 The main benchmark files are:
 
 ```text
-data/generated_multi_value_dataset_with_info.json
+data/DiverValue-Bench_dataset.json
 data/DVB-train.json
 data/DVB-val.json
 data/DVB-test.json
 ```
 
-`generated_multi_value_dataset_with_info.json` contains the full DiverValue-Bench data.
+`DiverValue-Bench_dataset.json` contains the full DiverValue-Bench data.
 
 `DVB-train.json`, `DVB-val.json`, and `DVB-test.json` are user-disjoint splits used for fine-tuning and evaluation.
 
@@ -369,7 +369,7 @@ This section describes how to reproduce the major experimental components report
 
 ### 8.1 Generate Model Answers on DiverValue-Bench
 
-The API-based generation scripts take `generated_multi_value_dataset_with_info.json` as input and produce model-specific output files.
+The API-based generation scripts take `DiverValue-Bench_dataset.json` as input and produce model-specific output files.
 
 Example for GPT-4o:
 

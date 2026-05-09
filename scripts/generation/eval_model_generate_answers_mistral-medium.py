@@ -53,7 +53,7 @@ def query_openai(prompt, model=MODEL_NAME, max_tokens=512, temperature=0.7, retr
     return None
 
 def main():
-    input_file = "data/generated_multi_value_dataset_with_info.json"
+    input_file = "data/DiverValue-Bench_dataset.json"
     output_file = "data/mistral-medium_multi_value_evaluation_result_pref_match.json"
 
     data = load_dataset(input_file)

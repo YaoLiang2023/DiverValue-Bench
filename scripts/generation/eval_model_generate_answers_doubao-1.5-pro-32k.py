@@ -67,7 +67,7 @@ def judge_matching(model_answer, answer_w, question, user_profile, preference, s
     return response
 
 def main():
-    input_file = "data/generated_multi_value_dataset_with_info.json"
+    input_file = "data/DiverValue-Bench_dataset.json"
     output_file = "data/doubao-1.5-pro-32k_multi_value_evaluation_result_pref_match.json"
 
     data = load_dataset(input_file)

@@ -99,7 +99,7 @@ The repository is organized around the full DiverValue-Bench pipeline.
 │   ├── DVB-train.json
 │   ├── DVB-val.json
 │   ├── DVB-test.json
-│   ├── generated_multi_value_dataset_with_info.json
+│   ├── DiverValue-Bench_dataset.json
 │   ├── uf-p-4/
 │   │   ├── helpfulness.json
 │   │   ├── honesty.json

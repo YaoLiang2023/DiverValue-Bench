@@ -356,7 +356,7 @@ Never commit API keys to the public repository.
 
 ---
 
-## 8. Data Construction from PRISM
+## 8. Data Construction
 
 DiverValue-Bench is constructed from the PRISM Alignment Dataset. PRISM provides user survey profiles, stated preferences, and multi-turn conversations with LLMs. In our construction pipeline, we use the PRISM survey and conversation files to generate profile-conditioned, value-sensitive contrastive QA pairs.
 

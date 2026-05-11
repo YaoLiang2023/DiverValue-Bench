@@ -433,24 +433,6 @@ data/
 └── DiverValue-Bench_dataset.json
 ```
 
-For consistency with the evaluation scripts, rename or copy the generated dataset file as:
-
-```bash
-cp data/DiverValue-Bench_dataset.json data/generated_multi_value_dataset_with_info.json
-```
-
-Alternatively, change the output path in `scripts/data_construction/generate_data_final.py` from:
-
-```python
-output_file = "data/DiverValue-Bench_dataset.json"
-```
-
-to:
-
-```python
-output_file = "data/generated_multi_value_dataset_with_info.json"
-```
-
 ### 8.4 API Configuration
 
 The value-preference mapping and QA-pair generation steps use GPT-4o through an OpenAI-compatible API interface. Before running:

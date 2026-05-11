@@ -356,13 +356,150 @@ Never commit API keys to the public repository.
 
 ---
 
-## 8. Reproducing the Main Results
+## 8. Data Construction from PRISM
+
+DiverValue-Bench is constructed from the PRISM Alignment Dataset. PRISM provides user survey profiles, stated preferences, and multi-turn conversations with LLMs. In our construction pipeline, we use the PRISM survey and conversation files to generate profile-conditioned, value-sensitive contrastive QA pairs.
+
+### 8.1 Source Dataset
+
+The PRISM Alignment Dataset is available from Hugging Face:
+
+```text
+https://huggingface.co/datasets/HannahRoseKirk/prism-alignment
+````
+
+The construction scripts expect the following PRISM files:
+
+```text
+data/
+├── survey.jsonl
+└── conversations.jsonl
+```
+
+These files correspond to:
+
+* `survey.jsonl`: user demographics, stated preferences, self-description, and system instruction strings.
+* `conversations.jsonl`: user conversations with LLMs, including conversation histories and feedback.
+
+PRISM is a third-party dataset and is not introduced by DiverValue-Bench. Please follow the PRISM dataset license and terms of use when using these files. Human-written texts in PRISM are licensed under CC-BY-4.0, while model responses are licensed under CC-BY-NC-4.0 and are also subject to the original model providers' terms.
+
+### 8.2 Preparing PRISM Files
+
+We recommend downloading PRISM from its original Hugging Face repository rather than redistributing the raw PRISM files in this repository.
+
+Option 1: clone the dataset repository:
+
+```bash
+git lfs install
+git clone https://huggingface.co/datasets/HannahRoseKirk/prism-alignment external/prism-alignment
+```
+
+Then copy the required files into `data/`:
+
+```bash
+mkdir -p data
+
+# Depending on the downloaded structure, the files may be either at the repository root or under data/.
+cp external/prism-alignment/survey.jsonl data/survey.jsonl 2>/dev/null || cp external/prism-alignment/data/survey.jsonl data/survey.jsonl
+cp external/prism-alignment/conversations.jsonl data/conversations.jsonl 2>/dev/null || cp external/prism-alignment/data/conversations.jsonl data/conversations.jsonl
+```
+
+
+### 8.3 Running the Data Construction Pipeline
+
+All commands should be executed from the repository root.
+
+```bash
+# Step 1: merge PRISM survey and conversation files by user_id
+python scripts/data_construction/merge_data.py
+
+# Step 2: map raw stated preference scores into concise value-preference descriptions
+python scripts/data_construction/add_values_final.py
+
+# Step 3: convert labeled_prism.json to JSONL format
+python scripts/data_construction/json_convert.py
+
+# Step 4: generate contrastive QA pairs conditioned on conversation history and user value preferences
+python scripts/data_construction/generate_data_final.py
+```
+
+The expected intermediate and final outputs are:
+
+```text
+data/
+├── merged.jsonl
+├── labeled_prism.json
+├── labeled_prism.jsonl
+└── DiverValue-Bench_dataset.json
+```
+
+For consistency with the evaluation scripts, rename or copy the generated dataset file as:
+
+```bash
+cp data/DiverValue-Bench_dataset.json data/generated_multi_value_dataset_with_info.json
+```
+
+Alternatively, change the output path in `scripts/data_construction/generate_data_final.py` from:
+
+```python
+output_file = "data/DiverValue-Bench_dataset.json"
+```
+
+to:
+
+```python
+output_file = "data/generated_multi_value_dataset_with_info.json"
+```
+
+### 8.4 API Configuration
+
+The value-preference mapping and QA-pair generation steps use GPT-4o through an OpenAI-compatible API interface. Before running:
+
+```bash
+python scripts/data_construction/add_values_final.py
+python scripts/data_construction/generate_data_final.py
+```
+
+please configure your API credentials.
+
+We recommend setting environment variables:
+
+```bash
+export OPENAI_API_KEY="your_api_key"
+export OPENAI_BASE_URL="your_base_url"
+```
+
+and initializing the client in `chatbot_final.py` and `generate_data_final.py` as:
+
+```python
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    base_url=os.environ.get("OPENAI_BASE_URL"),
+    api_key=os.environ.get("OPENAI_API_KEY")
+)
+```
+
+Do not commit API keys to the public repository.
+
+### 8.5 Notes
+
+* The raw PRISM files are third-party data and should be obtained from the original PRISM source.
+* The construction pipeline uses PRISM `survey.jsonl` and `conversations.jsonl`; `utterances.jsonl` is not required for the current DiverValue-Bench construction scripts.
+* Each merged PRISM user-conversation record is used to generate three contrastive QA pairs by default.
+* The generated examples contain `question`, `answer_w`, `answer_l`, demographic metadata, raw stated preferences, and the mapped value-preference description.
+
+
+---
+
+## 9. Reproducing the Main Results
 
 This section describes how to reproduce the major experimental components reported in the paper.
 
 ---
 
-### 8.1 Generate Model Answers on DiverValue-Bench
+### 9.1 Generate Model Answers on DiverValue-Bench
 
 The API-based generation scripts take `DiverValue-Bench_dataset.json` as input and produce model-specific output files.
 
@@ -408,7 +545,7 @@ data/mistral-medium_multi_value_evaluation_result_pref_match.json
 
 ---
 
-### 8.2 Run Poly-Judge Evaluation
+### 9.2 Run Poly-Judge Evaluation
 
 DiverValue-Bench uses a poly-judge protocol. Each evaluated model answer is judged by three independent judge models:
 
@@ -455,7 +592,7 @@ python scripts/judge/eval_model_judge_mistral-medium_pairwise_polyjudge.py
 
 ---
 
-### 8.3 Preference Alignment Accuracy
+### 9.3 Preference Alignment Accuracy
 
 Preference Alignment Accuracy (PAA) is defined as the fraction of evaluated instances whose final poly-judge label is `W`:
 
@@ -479,7 +616,7 @@ Small differences in `N` may occur when rare invalid or missing model outputs ar
 
 ---
 
-## 9. Fine-Tuning with LoRA + DPO
+## 10. Fine-Tuning with LoRA + DPO
 
 We fine-tune LLaMA-2 and Qwen models using DiverValue-Bench preference pairs.
 
@@ -500,7 +637,7 @@ Each instance is converted into the DPO format:
 }
 ```
 
-### 9.1 LLaMA-2 Training
+### 10.1 LLaMA-2 Training
 
 LLaMA-2-7B:
 
@@ -521,7 +658,7 @@ output/llama2-7b_dpo_finetuned_final_seed12
 output/llama2-13b_dpo_finetuned_final_seed12
 ```
 
-### 9.2 Qwen Training
+### 10.2 Qwen Training
 
 Qwen-7B:
 
@@ -542,7 +679,7 @@ output/qwen-7b_dpo_finetuned_final_seed12
 output/qwen-14b_dpo_finetuned_final_seed12
 ```
 
-### 9.3 Training Hyperparameters
+### 10.3 Training Hyperparameters
 
 | Hyperparameter                   |      Value |
 | -------------------------------- | ---------: |
@@ -574,11 +711,11 @@ c_attn
 
 ---
 
-## 10. OPA Evaluation
+## 11. OPA Evaluation
 
 Optimized Preference Alignment (OPA) evaluates whether a model assigns higher length-normalized likelihood to the aligned answer `answer_w` than to the misaligned answer `answer_l` under increasingly strict log-probability margins.
 
-### 10.1 In-Distribution Evaluation on DVB-test
+### 11.1 In-Distribution Evaluation on DVB-test
 
 Base LLaMA-2-7B:
 
@@ -628,7 +765,7 @@ Fine-tuned Qwen-14B:
 python scripts/eval_opa/eval_self_qwen-14b_opa_seed12.py
 ```
 
-### 10.2 Out-of-Distribution Evaluation on UF-P-4
+### 11.2 Out-of-Distribution Evaluation on UF-P-4
 
 UF-P-4 contains four preference-alignment subsets:
 
@@ -672,9 +809,9 @@ The released scripts include the seed-12 runs. To reproduce mean and standard de
 
 ---
 
-## 11. Country, Region, and Demographic Analysis
+## 12. Country, Region, and Demographic Analysis
 
-### 11.1 Mean PAA by Birth Country/Region
+### 12.1 Mean PAA by Birth Country/Region
 
 To generate the country-level mean PAA map across five evaluated models:
 
@@ -688,13 +825,13 @@ To generate the GPT-4o country-level map:
 python scripts/analysis/statistics_birth_country_judge_map_gpt-4o.py
 ```
 
-### 11.2 Country-Level Radar Chart
+### 12.2 Country-Level Radar Chart
 
 ```bash
 python scripts/analysis/statistics_birth_country_judge_rada_final_r_hk.py
 ```
 
-### 11.3 Regional and Demographic Radar Charts
+### 12.3 Regional and Demographic Radar Charts
 
 ```bash
 python scripts/analysis/statistics_region_judge_final.py
@@ -711,7 +848,7 @@ Only `final_label == "W"` is counted as aligned.
 
 ---
 
-## 12. Reproducibility Checklist
+## 13. Reproducibility Checklist
 
 The following table maps paper results to the corresponding scripts.
 
@@ -731,7 +868,7 @@ The following table maps paper results to the corresponding scripts.
 
 ---
 
-## 13. Notes on Reproducibility
+## 14. Notes on Reproducibility
 
 1. **Closed-source API models may change over time.**
    Results involving GPT-4o, Claude, DeepSeek, Doubao, or Mistral API endpoints may vary if the provider updates the model, endpoint, decoding behavior, or safety policy.
@@ -753,7 +890,7 @@ The following table maps paper results to the corresponding scripts.
 
 ---
 
-## 14. Ethical and Responsible Use
+## 15. Ethical and Responsible Use
 
 DiverValue-Bench is designed for research on value alignment, personalized alignment, and cross-cultural evaluation of LLMs. Because the benchmark includes demographic metadata and value-preference information, users should follow responsible data-use practices.
 
@@ -768,7 +905,7 @@ The intended use of this benchmark is to support safer, fairer, and more cultura
 
 ---
 
-## 15. License
+## 16. License
 
 Please see `LICENSE` for the code license and `DATA_LICENSE` for the dataset license.
 
@@ -776,7 +913,7 @@ If you use third-party datasets, models, or APIs, please also comply with their 
 
 ---
 
-## 16. Contact
+## 17. Contact
 
 For questions about the benchmark, implementation, or reproducibility materials, please contact:
 

@@ -387,23 +387,14 @@ PRISM is a third-party dataset and is not introduced by DiverValue-Bench. Please
 
 We recommend downloading PRISM from its original Hugging Face repository rather than redistributing the raw PRISM files in this repository.
 
-Option 1: clone the dataset repository:
+clone the dataset repository:
 
 ```bash
 git lfs install
 git clone https://huggingface.co/datasets/HannahRoseKirk/prism-alignment external/prism-alignment
 ```
 
-Then copy the required files into `data/`:
-
-```bash
-mkdir -p data
-
-# Depending on the downloaded structure, the files may be either at the repository root or under data/.
-cp external/prism-alignment/survey.jsonl data/survey.jsonl 2>/dev/null || cp external/prism-alignment/data/survey.jsonl data/survey.jsonl
-cp external/prism-alignment/conversations.jsonl data/conversations.jsonl 2>/dev/null || cp external/prism-alignment/data/conversations.jsonl data/conversations.jsonl
-```
-
+Then copy the required files into `data/`.
 
 ### 8.3 Running the Data Construction Pipeline
 
@@ -432,46 +423,6 @@ data/
 ├── labeled_prism.jsonl
 └── DiverValue-Bench_dataset.json
 ```
-
-### 8.4 API Configuration
-
-The value-preference mapping and QA-pair generation steps use GPT-4o through an OpenAI-compatible API interface. Before running:
-
-```bash
-python scripts/data_construction/add_values_final.py
-python scripts/data_construction/generate_data_final.py
-```
-
-please configure your API credentials.
-
-We recommend setting environment variables:
-
-```bash
-export OPENAI_API_KEY="your_api_key"
-export OPENAI_BASE_URL="your_base_url"
-```
-
-and initializing the client in `chatbot_final.py` and `generate_data_final.py` as:
-
-```python
-import os
-from openai import OpenAI
-
-client = OpenAI(
-    base_url=os.environ.get("OPENAI_BASE_URL"),
-    api_key=os.environ.get("OPENAI_API_KEY")
-)
-```
-
-Do not commit API keys to the public repository.
-
-### 8.5 Notes
-
-* The raw PRISM files are third-party data and should be obtained from the original PRISM source.
-* The construction pipeline uses PRISM `survey.jsonl` and `conversations.jsonl`; `utterances.jsonl` is not required for the current DiverValue-Bench construction scripts.
-* Each merged PRISM user-conversation record is used to generate three contrastive QA pairs by default.
-* The generated examples contain `question`, `answer_w`, `answer_l`, demographic metadata, raw stated preferences, and the mapped value-preference description.
-
 
 ---
 
